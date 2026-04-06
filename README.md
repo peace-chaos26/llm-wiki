@@ -29,6 +29,65 @@ Wiki outperforms BM25 RAG by +2.5 points on synthesis questions requiring multi-
 
 ---
 
+---
+
+## What I built on top of Karpathy's idea
+
+Karpathy's gist describes the *pattern* — three layers, three operations, the insight that LLMs handle wiki maintenance cheaply. It is intentionally abstract: "The exact directory structure, the schema conventions, the page formats, the tooling — all of that will depend on your domain."
+
+This repo is a full implementation of that pattern with four additions that address gaps the original idea leaves open.
+
+---
+
+**1. Source provenance tracking**
+
+The gist has no answer for this question: *what happens when a source file changes?* The wiki was compiled from that source — but now the compiled knowledge may be wrong, and nothing knows it.
+
+I built a SQLite provenance layer (`provenance.py`) that records the SHA-256 hash of every source file at ingest time, and tracks which specific claims each source contributed to each wiki page. When `check_staleness()` runs, it re-hashes every source file and flags any wiki page whose source has drifted. Re-ingest to resolve. The wiki never silently serves stale knowledge.
+
+This is the most technically differentiated piece. Most llm-wiki implementations skip it entirely.
+
+---
+
+**2. Multi-pass ingest pipeline**
+
+The gist describes ingest as a single operation: the LLM reads the source, writes a summary page, updates entity and concept pages. One prompt doing all of this produces inconsistent output — conflated responsibilities, missed entity pages, malformed frontmatter.
+
+I decomposed ingest into four focused passes (`ingest.py`):
+
+- Pass 1: structured JSON extraction — title, entities, concepts, claims, contradictions
+- Pass 2: source wiki page (strict template)
+- Pass 3: entity pages — one LLM call per entity, update-aware
+- Pass 4: concept pages — synthesis-focused, contradiction-aware
+
+Each pass has a single responsibility. Pass 1 is non-streaming JSON that drives all subsequent passes. Passes 2–4 stream in real time. The result is more consistent, debuggable, and independently testable — mock any pass without touching the others.
+
+---
+
+**3. Structured evaluation harness**
+
+The gist describes lint as a health-check but gives no metrics. There is no way to know whether a wiki is *good* — well-synthesised, well-connected, current — versus just large.
+
+I built two evaluation modules (`eval/`):
+
+- **Wiki quality eval** — six structural metrics (entity coverage, cross-link density, orphan rate, stub rate, source freshness, concept depth) combined into a 0–100 composite score.
+- **Query eval** — LLM-as-judge comparison of wiki answers versus a BM25 RAG baseline over the same raw sources, broken down by question type (lookup vs synthesis). This produces the benchmark result above and gives a principled answer to the question "is the compiled wiki actually better than just using RAG?"
+
+Without this, you can't claim the wiki is better — you can only hope it is. The eval harness makes the claim measurable.
+
+---
+
+**4. Production API and UI layer**
+
+The gist assumes Claude Code or a similar agentic coding environment as the interface. All operations are manual — you instruct the LLM in a chat window.
+
+I wrapped the three operations in a FastAPI server with Server-Sent Events streaming (`api.py`) and a Streamlit frontend (`app.py`). Every ingest, query, and lint operation streams progress in real time. The API is fully documented via auto-generated Swagger UI at `/docs`. This makes the system usable without a coding environment and demonstrable without a terminal.
+
+---
+
+These four additions address the production gaps in the original idea: *correctness over time* (provenance), *consistency at scale* (multi-pass pipeline), *measurability* (eval harness), and *usability* (API + UI). The core insight — that LLMs should compile knowledge rather than re-derive it on every query — is Karpathy's. The engineering to make that insight reliable and measurable is the work here.
+
+
 ## Architecture
 
 Three layers:
@@ -191,6 +250,15 @@ llm-wiki/
 ├── requirements.txt
 └── .env.example
 ```
+
+---
+
+## Roadmap
+
+- [ ] Hybrid BM25 + dense search over wiki pages at scale (qmd / local vector DB)
+- [ ] auto-synthesis — LLM maintains a high-level wiki summary
+- [ ] Multi-source ingest — batch ingest a directory
+- [ ] Expand eval benchmark — 20+ questions across 3+ topic domains
 
 ---
 
