@@ -229,6 +229,84 @@ def bootstrap_index() -> None:
     settings.index_path.write_text(text, encoding="utf-8")
 
 
+def rebuild_index() -> None:
+    """
+    Rebuild index.md from scratch by scanning actual wiki pages on disk.
+
+    Fixes three issues with incremental add_index_row():
+      - Section headers show wrong counts (e.g. '## Concepts (0)')
+      - Duplicate rows accumulate across multiple ingests
+      - Status/tags on existing pages drift out of sync
+
+    Call this after any ingest, or whenever index.md looks inconsistent.
+    Also exposed via GET /index/rebuild in api.py.
+    """
+    sources  = list_pages("source")
+    entities = list_pages("entity")
+    concepts = list_pages("concept")
+    queries  = list_pages("query")
+    now = _now_iso()
+
+    lines = [
+        "---",
+        f'last_updated: "{now}"',
+        f"source_count: {len(sources)}",
+        f"page_count: {len(sources) + len(entities) + len(concepts) + len(queries)}",
+        "---",
+        "",
+        "# Wiki index",
+        "",
+        f"## Sources ({len(sources)})",
+        "| Date | Title | Tags | Page |",
+        "|------|-------|------|------|",
+    ]
+    for p in sources:
+        fm, _ = parse_page(p)
+        date = p.stem[:10]
+        title = fm.get("title", p.stem)
+        tags = ", ".join(fm.get("tags", []))
+        lines.append(f"| {date} | {title} | {tags} | [[sources/{p.stem}]] |")
+
+    lines += [
+        "",
+        f"## Entities ({len(entities)})",
+        "| Name | Type | Page |",
+        "|------|------|------|",
+    ]
+    for p in entities:
+        fm, _ = parse_page(p)
+        title = fm.get("title", p.stem)
+        entity_type = fm.get("entity_type", "other")
+        lines.append(f"| {title} | {entity_type} | [[entities/{p.stem}]] |")
+
+    lines += [
+        "",
+        f"## Concepts ({len(concepts)})",
+        "| Name | Status | Tags | Page |",
+        "|------|--------|------|------|",
+    ]
+    for p in concepts:
+        fm, _ = parse_page(p)
+        title = fm.get("title", p.stem)
+        status = fm.get("status", "stub")
+        tags = ", ".join(fm.get("tags", []))
+        lines.append(f"| {title} | {status} | {tags} | [[concepts/{p.stem}]] |")
+
+    lines += [
+        "",
+        f"## Recent queries ({len(queries)})",
+        "| Date | Question | Page |",
+        "|------|----------|------|",
+    ]
+    for p in queries:
+        fm, _ = parse_page(p)
+        date = p.stem[:10]
+        title = fm.get("title", p.stem)
+        lines.append(f"| {date} | {title} | [[queries/{p.stem}]] |")
+
+    settings.index_path.write_text("\n".join(lines), encoding="utf-8")
+
+
 def add_index_row(page_type: PageType, row_data: dict[str, str]) -> None:
     """
     Append a row to the correct section table in index.md.

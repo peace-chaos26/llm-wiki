@@ -122,9 +122,11 @@ async def _sse_stream(
     """
     try:
         async for chunk in generator:
-            # Escape newlines inside a single SSE data field
-            escaped = chunk.replace("\n", "\\n")
-            yield f"data: {escaped}\n\n"
+            if chunk.startswith("__RESULT__:") or chunk.startswith("__ERROR__:"):
+                yield f"data: {chunk}\n\n"
+            else:
+                escaped = chunk.replace("\n", "\\n")
+                yield f"data: {escaped}\n\n"
     except Exception as e:
         yield f"data: __ERROR__:{str(e)}\n\n"
 

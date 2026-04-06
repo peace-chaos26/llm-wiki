@@ -116,7 +116,8 @@ def _build_page_selection_prompt(question: str, index_text: str, log_text: str) 
         - Include only pages listed in the index above.
         - Use the path format without leading 'wiki/' — e.g. 'concepts/rag', 'sources/2026-04-06_x'.
         - Include between 1 and 8 pages. More than 8 is usually noise.
-        - If the index contains no relevant pages at all, set wiki_sufficient to false.
+        - Set wiki_sufficient to TRUE if any relevant pages exist in the index, even if they are stubs or partially developed. The answer LLM will determine if content is sufficient — your job is only page selection.
+        - Only set wiki_sufficient to FALSE if the index has zero pages related to the question whatsoever.
         - Return only the JSON object. No preamble, no explanation.
     """)
 
@@ -428,4 +429,10 @@ async def query_wiki(
     if result.filed_as:
         yield f"   Answer filed as: wiki/queries/{result.filed_as}.md\n"
 
-    yield f"__RESULT__:{json.dumps(result.__dict__)}"
+    result_payload = {
+        "question": result.question,
+        "pages_consulted": result.pages_consulted,
+        "filed_as": result.filed_as,
+        "wiki_insufficient": result.wiki_insufficient,
+    }
+    yield f"__RESULT__:{json.dumps(result_payload)}"

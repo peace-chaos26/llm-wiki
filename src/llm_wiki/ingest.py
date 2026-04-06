@@ -47,6 +47,7 @@ from wiki_manager import (
     read_index,
     read_schema,
     recent_log_entries,
+    rebuild_index,
     write_page,
 )
 
@@ -360,6 +361,12 @@ def _fix_source_hash(content: str, real_hash: str) -> str:
     """Replace the __HASH__ placeholder with the real SHA-256 hash."""
     return content.replace("__HASH__", real_hash)
 
+def _strip_fences(content: str) -> str:
+    """Strip markdown code fences LLMs sometimes add despite instructions."""
+    content = content.strip()
+    content = re.sub(r"^```(?:markdown)?\s*\n", "", content)
+    content = re.sub(r"\n```\s*$", "", content)
+    return content
 
 # ── Main pipeline ──────────────────────────────────────────────────────────────
 
@@ -453,6 +460,7 @@ async def ingest_source(
 
     # Replace hash placeholder
     source_page_content = _fix_source_hash(source_page_content, source_hash)
+    source_page_content = _strip_fences(source_page_content)
 
     # Write to disk
     dest = page_path("source", slug_str)
@@ -484,6 +492,8 @@ async def ingest_source(
         ):
             entity_content += chunk
             yield chunk
+
+        entity_content = _strip_fences(entity_content)
 
         epath.parent.mkdir(parents=True, exist_ok=True)
         epath.write_text(entity_content, encoding="utf-8")
@@ -525,6 +535,8 @@ async def ingest_source(
             concept_content += chunk
             yield chunk
 
+        concept_content = _strip_fences(concept_content)
+
         cpath.parent.mkdir(parents=True, exist_ok=True)
         cpath.write_text(concept_content, encoding="utf-8")
 
@@ -549,12 +561,7 @@ async def ingest_source(
 
     # ── Update index.md ────────────────────────────────────────────────────────
     yield "\n📚 Updating index.md...\n"
-    add_index_row("source", {
-        "date": date_str,
-        "title": result.title,
-        "tags": ", ".join(extraction.get("tags", [])),
-        "slug": slug_str,
-    })
+    rebuild_index()
     yield "   ✓ index.md updated\n"
 
     # ── Append to log.md ───────────────────────────────────────────────────────
