@@ -1,0 +1,98 @@
+{
+  "total_questions": 5,
+  "wiki_avg_score": 7.0,
+  "rag_avg_score": 7.6,
+  "wiki_win_rate": 0.2,
+  "avg_citation_accuracy": 1.0,
+  "avg_faithfulness": 0.0,
+  "wiki_insufficient_rate": 0.0,
+  "by_type": {
+    "lookup": {
+      "count": 3,
+      "wiki_avg": 7.33,
+      "rag_avg": 10.0
+    },
+    "synthesis": {
+      "count": 2,
+      "wiki_avg": 6.5,
+      "rag_avg": 4.0
+    }
+  },
+  "results": [
+    {
+      "question": "What is Retrieval-Augmented Generation?",
+      "question_type": "lookup",
+      "wiki_answer": "\ud83d\udd0d Scanning index for pages relevant to: \"What is Retrieval-Augmented Generation?\"\n\n   Selected 3 page(s):\n\n\ud83d\udcd6 Reading wiki pages...\n\n\ud83d\udcac Synthesising answer...\n\nRetrieval-Augmented Generation (RAG) is a technique in natural language processing that integrates a retrieval component with a generative model to enhance the generation process by incorporating external knowledge (\u2192 [[concepts/retrieval-augmented-generation]]). This approach allows RAG systems to first retrieve relevant information from a",
+      "rag_answer": "Retrieval-Augmented Generation (RAG) is a framework introduced by Lewis et al. at Facebook AI Research in 2020. It addresses the limitation of parametric language models, whose knowledge is fixed at the time of training and cannot be updated without retraining. RAG combines a dense retrieval model and a sequence-to-sequence generator. The retrieval model encodes both the query and a large document corpus into a shared embedding space, retrieving the top-k most relevant documents using maximum in",
+      "wiki_latency_s": 7.98,
+      "rag_latency_s": 2.35,
+      "wiki_score": 8.0,
+      "rag_score": 10.0,
+      "citation_count": 10,
+      "citations_valid": 10,
+      "citation_accuracy": 1.0,
+      "faithfulness_score": 0.0,
+      "wiki_insufficient": false
+    },
+    {
+      "question": "What is the key advantage of RAG over standard language models?",
+      "question_type": "lookup",
+      "wiki_answer": "\ud83d\udd0d Scanning index for pages relevant to: \"What is the key advantage of RAG over standard language models?\"\n\n   Selected 1 page(s):\n\n\ud83d\udcd6 Reading wiki pages...\n\n\ud83d\udcac Synthesising answer...\n\nThe key advantage of Retrieval-Augmented Generation (RAG) over standard language models lies in its ability to integrate external knowledge into the generation process, enhancing the model's capacity to produce accurate and contextually relevant outputs. This is achieved through the combination of a retrieval compone",
+      "rag_answer": "The key advantage of Retrieval-Augmented Generation (RAG) over standard language models is that it addresses the limitation of parametric language models, whose knowledge is frozen at training time and cannot be updated without retraining. RAG achieves this by combining a dense retrieval model with a sequence-to-sequence generator, allowing it to retrieve and incorporate up-to-date information from a large document corpus at inference time (Source: rag-detailed.txt).",
+      "wiki_latency_s": 5.13,
+      "rag_latency_s": 1.32,
+      "wiki_score": 9.0,
+      "rag_score": 10.0,
+      "citation_count": 3,
+      "citations_valid": 3,
+      "citation_accuracy": 1.0,
+      "faithfulness_score": 0.0,
+      "wiki_insufficient": false
+    },
+    {
+      "question": "How does RAG separate parametric and non-parametric memory?",
+      "question_type": "synthesis",
+      "wiki_answer": "\ud83d\udd0d Scanning index for pages relevant to: \"How does RAG separate parametric and non-parametric memory?\"\n\n   Selected 1 page(s):\n\n\ud83d\udcd6 Reading wiki pages...\n\n\ud83d\udcac Synthesising answer...\n\nRetrieval-Augmented Generation (RAG) separates parametric and non-parametric memory by utilizing a dual-component system that integrates a retrieval mechanism with a generative model. \n\n### Separation of Memory\n\n1. **Parametric Memory**: This is the memory encoded within the model's parameters. It is fixed and represents",
+      "rag_answer": "I'm sorry, but there are no relevant documents provided to answer the question about how RAG separates parametric and non-parametric memory.",
+      "wiki_latency_s": 9.67,
+      "rag_latency_s": 1.14,
+      "wiki_score": 8.0,
+      "rag_score": 0.0,
+      "citation_count": 4,
+      "citations_valid": 4,
+      "citation_accuracy": 1.0,
+      "faithfulness_score": 0.0,
+      "wiki_insufficient": false
+    },
+    {
+      "question": "Who introduced RAG and when was it published?",
+      "question_type": "lookup",
+      "wiki_answer": "\ud83d\udd0d Scanning index for pages relevant to: \"Who introduced RAG and when was it published?\"\n\n   Selected 4 page(s):\n\n\ud83d\udcd6 Reading wiki pages...\n\n\ud83d\udcac Synthesising answer...\n\n### Introduction of RAG\n\nRetrieval-Augmented Generation (RAG) was introduced by Lewis et al. at Facebook AI Research. This framework combines a retrieval component with a generative model, allowing for dynamic updates to the knowledge base without the need for retraining the model (\u2192 [[sources/2026-04-06_overview-of-retrieval-augmente",
+      "rag_answer": "Retrieval-Augmented Generation (RAG) was introduced by Lewis et al. at Facebook AI Research in 2020 (Source: rag-detailed.txt).",
+      "wiki_latency_s": 20.46,
+      "rag_latency_s": 1.49,
+      "wiki_score": 5.0,
+      "rag_score": 10.0,
+      "citation_count": 4,
+      "citations_valid": 4,
+      "citation_accuracy": 1.0,
+      "faithfulness_score": 0.0,
+      "wiki_insufficient": false
+    },
+    {
+      "question": "What are the limitations of RAG systems?",
+      "question_type": "synthesis",
+      "wiki_answer": "\ud83d\udd0d Scanning index for pages relevant to: \"What are the limitations of RAG systems?\"\n\n   Selected 1 page(s):\n\n\ud83d\udcd6 Reading wiki pages...\n\n\ud83d\udcac Synthesising answer...\n\nThe wiki provides some insights into the limitations of Retrieval-Augmented Generation (RAG) systems, though it does not cover all aspects comprehensively.\n\n### Limitations of RAG Systems\n\n1. **Trade-offs Between Retrieval Accuracy and Generative Quality**: One of the open questions in the development of RAG systems is understanding the tr",
+      "rag_answer": "The limitations of Retrieval-Augmented Generation (RAG) systems include:\n\n1. **Dependence on Document Corpus**: RAG systems rely heavily on the quality and comprehensiveness of the document corpus. If the corpus is outdated or lacks relevant information, the system's ability to provide accurate and current answers is compromised. This is because the retrieval model encodes the query and documents into a shared embedding space, and the generator produces answers based on these retrieved documents",
+      "wiki_latency_s": 22.59,
+      "rag_latency_s": 4.05,
+      "wiki_score": 5.0,
+      "rag_score": 8.0,
+      "citation_count": 2,
+      "citations_valid": 2,
+      "citation_accuracy": 1.0,
+      "faithfulness_score": 0.0,
+      "wiki_insufficient": false
+    }
+  ]
+}

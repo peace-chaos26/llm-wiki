@@ -1,0 +1,32 @@
+[
+    {
+      "question": "What is Retrieval-Augmented Generation?",
+      "type": "lookup",
+      "expected_concepts": ["concepts/retrieval-augmented-generation"],
+      "reference_answer": "RAG combines a dense retrieval component with a generative model to access external knowledge dynamically without retraining."
+    },
+    {
+      "question": "What is the key advantage of RAG over standard language models?",
+      "type": "lookup",
+      "expected_concepts": ["concepts/retrieval-augmented-generation"],
+      "reference_answer": "The knowledge store can be updated independently of the model, separating parametric from non-parametric memory."
+    },
+    {
+      "question": "How does RAG separate parametric and non-parametric memory?",
+      "type": "synthesis",
+      "expected_concepts": ["concepts/retrieval-augmented-generation"],
+      "reference_answer": "Parametric memory is encoded in model weights and fixed at training. Non-parametric memory is the external document index which can be updated or swapped without retraining."
+    },
+    {
+      "question": "Who introduced RAG and when?",
+      "type": "lookup",
+      "expected_concepts": ["concepts/retrieval-augmented-generation", "entities/facebook-ai-research"],
+      "reference_answer": "Lewis et al. at Facebook AI Research introduced RAG in 2020."
+    },
+    {
+      "question": "What are the limitations of RAG systems?",
+      "type": "synthesis",
+      "expected_concepts": ["concepts/retrieval-augmented-generation"],
+      "reference_answer": "Retrieval latency, sensitivity to retrieval index quality, and difficulty with multi-hop reasoning across documents."
+    }
+  ]
