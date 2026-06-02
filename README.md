@@ -151,7 +151,7 @@ Three operations:
 **Prerequisites:** Python 3.11+, OpenAI API key
 
 ```bash
-git clone https://github.com/peace-chaos26/llm-wiki.git
+git clone https://github.com/sakshi-2606/llm-wiki.git
 cd llm-wiki
 
 python3 -m venv .venv && source .venv/bin/activate
